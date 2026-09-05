@@ -1,0 +1,24 @@
+{% extends 'jobs/base.html' %}
+{% block title %}Post a Job | JobBoard{% endblock %}
+
+{% block content %}
+<div class="form-card">
+    <h2>Post a New Job</h2>
+    <form method="POST">
+        {% csrf_token %}
+        {% for field in form %}
+            <div class="form-group">
+                <label>{{ field.label }}</label>
+                {{ field }}
+                {% if field.help_text %}
+                    <small style="color:#6b7280; font-size:0.75rem;">{{ field.help_text }}</small>
+                {% endif %}
+                {% if field.errors %}
+                    <div class="field-error">{{ field.errors }}</div>
+                {% endif %}
+            </div>
+        {% endfor %}
+        <button type="submit" class="btn btn-primary btn-full">Post Job</button>
+    </form>
+</div>
+{% endblock %}
