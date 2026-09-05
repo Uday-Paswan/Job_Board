@@ -1,0 +1,27 @@
+{% extends 'jobs/base.html' %}
+{% block title %}Sign Up | JobBoard{% endblock %}
+
+{% block content %}
+<div class="form-card">
+    <h2>Create Account</h2>
+    <form method="POST">
+        {% csrf_token %}
+        {% for field in form %}
+            <div class="form-group">
+                <label>{{ field.label }}</label>
+                {{ field }}
+                {% if field.help_text %}
+                    <small style="color:#6b7280; font-size:0.75rem;">{{ field.help_text }}</small>
+                {% endif %}
+                {% if field.errors %}
+                    <div class="field-error">{{ field.errors }}</div>
+                {% endif %}
+            </div>
+        {% endfor %}
+        <button type="submit" class="btn btn-primary btn-full">Sign Up</button>
+    </form>
+    <p style="text-align:center; margin-top:16px; font-size:0.9rem;">
+        Already have an account? <a href="{% url 'login' %}" style="color:#2563eb;">Login</a>
+    </p>
+</div>
+{% endblock %}

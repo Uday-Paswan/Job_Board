@@ -1,0 +1,25 @@
+{% extends 'jobs/base.html' %}
+{% block title %}Browse Jobs | JobBoard{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h2>Available Jobs</h2>
+    <span class="count-badge">{{ jobs|length }} open position{{ jobs|length|pluralize }}</span>
+</div>
+
+<div class="job-grid">
+    {% for job in jobs %}
+        <div class="job-card">
+            <div class="job-card-top">
+                <h3>{{ job.title }}</h3>
+                <span class="job-type-badge">{{ job.get_job_type_display }}</span>
+            </div>
+            <p class="job-location">📍 {{ job.location }}</p>
+            <p class="job-desc">{{ job.description|truncatewords:20 }}</p>
+            <p class="job-meta">Deadline: {{ job.deadline }} · Posted by {{ job.posted_by }}</p>
+        </div>
+    {% empty %}
+        <div class="alert alert-info">No jobs posted yet. Check back soon!</div>
+    {% endfor %}
+</div>
+{% endblock %}
