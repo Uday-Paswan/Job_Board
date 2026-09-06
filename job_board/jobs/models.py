@@ -41,3 +41,19 @@ class Profile(models.Model):
     def __str__(self):
         return f"{self.user.username} ({self.role})"
 
+class Application(models.Model):
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('reviewed', 'Reviewed'),
+        ('rejected', 'Rejected'),
+        ('accepted', 'Accepted'),
+    ]
+
+    job = models.ForeignKey(JobPost, on_delete=models.CASCADE, related_name='applications')
+    applicant = models.ForeignKey(User, on_delete=models.CASCADE, related_name='applications')
+    resume = models.FileField(upload_to='resumes/')
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    applied_date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.applicant.username} → {self.job.title}"

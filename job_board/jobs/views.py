@@ -1,14 +1,13 @@
 from django.shortcuts import render
-from .models import JobPost
+from .models import JobPost, Profile, Application
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
 from django.contrib import messages
 from django.shortcuts import redirect
 from django import forms
-from .models import Profile
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
-from .models import JobPost
+
 
 class SignUpForm(UserCreationForm):
     role = forms.ChoiceField(choices=Profile.ROLE_CHOICES)
@@ -21,6 +20,13 @@ class JobPostForm(forms.ModelForm):
     class Meta:
         model = JobPost
         fields = ['title', 'description', 'location', 'job_type', 'salary', 'skills', 'deadline']
+
+
+class ApplicationForm(forms.ModelForm):
+    class Meta:
+        model = Application
+        fields = ['resume']
+
 
 def home(request):
     jobs = JobPost.objects.all()
@@ -61,3 +67,25 @@ def post_job(request):
 
     return render(request, 'jobs/post_job.html', {'form': form})
 
+@login_required
+def apply_job(request, job_id):
+    job = JobPost.objects.get(id=job_id)
+    profile = getattr(request.user, 'profile', None)
+
+    if not profile or profile.role != 'seeker':
+        messages.error(request, "Only job seekers can apply.")
+        return redirect('home')
+
+    if request.method == 'POST':
+        form = ApplicationForm(request.POST, request.FILES)  # <-- note request.FILES, new!
+        if form.is_valid():
+            application = form.save(commit=False)
+            application.job = job
+            application.applicant = request.user
+            application.save()
+            messages.success(request, "Application submitted!")
+            return redirect('home')
+    else:
+        form = ApplicationForm()
+
+    return render(request, 'jobs/apply_job.html', {'form': form, 'job': job})

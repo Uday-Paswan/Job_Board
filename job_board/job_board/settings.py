@@ -128,3 +128,5 @@ MAILERS = {
 }
 LOGIN_REDIRECT_URL = '/jobs/'
 LOGOUT_REDIRECT_URL = '/jobs/'
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'

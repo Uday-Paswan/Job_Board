@@ -37,15 +37,21 @@
     </nav>
 
     <main>
-        <div class="container">
-            {% if messages %}
+        {% if messages %}
+            <div class="toast-container">
                 {% for message in messages %}
-                    <div class="alert alert-{{ message.tags }}" data-auto-dismiss>
-                        {{ message }}
+                    <div class="toast toast-{{ message.tags }}" data-auto-dismiss>
+                        <div class="toast-icon">
+                            {% if message.tags == 'success' %}✓{% elif message.tags == 'error' %}✕{% else %}ℹ{% endif %}
+                        </div>
+                        <div class="toast-text">{{ message }}</div>
+                        <button class="toast-close" aria-label="Close">&times;</button>
+                        <div class="toast-progress"></div>
                     </div>
                 {% endfor %}
-            {% endif %}
-
+            </div>
+        {% endif %}
+        <div class="container">
             {% block content %}{% endblock %}
         </div>
     </main>
