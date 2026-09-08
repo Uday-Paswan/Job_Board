@@ -89,3 +89,27 @@ def apply_job(request, job_id):
         form = ApplicationForm()
 
     return render(request, 'jobs/apply_job.html', {'form': form, 'job': job})
+
+@login_required
+def recruiter_dashboard(request):
+    profile = getattr(request.user, 'profile', None)
+
+    if not profile or profile.role != 'recruiter':
+        messages.error(request, "Only recruiters can view this page.")
+        return redirect('home')
+
+    jobs = request.user.job_posts.all()
+
+    return render(request, 'jobs/recruiter_dashboard.html', {'jobs': jobs})
+
+@login_required
+def seeker_dashboard(request):
+    profile = getattr(request.user, 'profile', None)
+
+    if not profile or profile.role != 'seeker':
+        messages.error(request, "Only job seekers can view this page.")
+        return redirect('home')
+
+    applications = request.user.applications.all()
+
+    return render(request, 'jobs/seeker_dashboard.html', {'applications': applications})

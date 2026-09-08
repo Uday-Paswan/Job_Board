@@ -5,4 +5,6 @@ urlpatterns = [
     path('signup/', views.signup, name='signup'),
     path('post/', views.post_job, name='post_job'),
     path('apply/<int:job_id>/', views.apply_job, name='apply_job'),
+    path('dashboard/', views.recruiter_dashboard, name='recruiter_dashboard'),
+    path('my-applications/', views.seeker_dashboard, name='seeker_dashboard'),
 ]

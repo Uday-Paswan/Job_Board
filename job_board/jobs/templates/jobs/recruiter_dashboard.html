@@ -1,0 +1,30 @@
+{% extends 'jobs/base.html' %}
+{% block title %}My Dashboard | JobBoard{% endblock %}
+
+{% block content %}
+<h2>My Posted Jobs</h2>
+
+{% for job in jobs %}
+    <div>
+        <h3>{{ job.title }} ({{ job.location }})</h3>
+        <p>Deadline: {{ job.deadline }}</p>
+
+        <h4>Applicants:</h4>
+        <ul>
+            {% for application in job.applications.all %}
+                <li>
+                    {{ application.applicant.username }} —
+                    <a href="{{ application.resume.url }}" target="_blank">View Resume</a>
+                    — Status: {{ application.status }}
+                </li>
+            {% empty %}
+                <li>No applicants yet.</li>
+            {% endfor %}
+        </ul>
+    </div>
+    <hr>
+{% empty %}
+    <p>You haven't posted any jobs yet.</p>
+{% endfor %}
+
+{% endblock %}
