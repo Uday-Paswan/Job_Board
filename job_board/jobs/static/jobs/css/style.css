@@ -400,3 +400,26 @@ footer {
         width: 100%;
     }
 }
+.search-form {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+    background: #fff;
+    padding: 16px;
+    border-radius: 10px;
+    border: 1px solid #e5e7eb;
+}
+
+.search-form input,
+.search-form select {
+    padding: 9px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 0.9rem;
+}
+
+.search-form input[type="text"] {
+    flex: 1;
+    min-width: 160px;
+}

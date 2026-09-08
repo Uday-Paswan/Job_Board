@@ -2,6 +2,20 @@
 {% block title %}Browse Jobs | JobBoard{% endblock %}
 
 {% block content %}
+<form method="GET" class="search-form">
+    <input type="text" name="search" placeholder="Search by title, skill, or keyword..." value="{{ search }}">
+    <input type="text" name="location" placeholder="Location" value="{{ location }}">
+    <select name="job_type">
+        <option value="">All Types</option>
+        {% for value, label in job_types %}
+            <option value="{{ value }}" {% if job_type == value %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+    </select>
+    <button type="submit" class="btn btn-primary">Search</button>
+    {% if search or location or job_type %}
+        <a href="{% url 'home' %}" class="btn btn-outline">Clear</a>
+    {% endif %}
+</form>
 <div class="page-header">
     <h2>Available Jobs</h2>
     <span class="count-badge">{{ jobs|length }} open position{{ jobs|length|pluralize }}</span>
@@ -21,8 +35,12 @@
                 <a href="{% url 'apply_job' job.id %}" class="btn btn-primary" style="margin-top:10px; text-align:center;">Apply Now</a>
             {% endif %}
         </div>
-    {% empty %}
+   {% empty %}
+    {% if search or location or job_type %}
+        <div class="alert alert-info">No jobs match your search. Try different filters.</div>
+    {% else %}
         <div class="alert alert-info">No jobs posted yet. Check back soon!</div>
+    {% endif %}
     {% endfor %}
 </div>
 {% endblock %}

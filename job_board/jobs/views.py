@@ -7,6 +7,7 @@ from django.shortcuts import redirect
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 
 
 class SignUpForm(UserCreationForm):
@@ -30,7 +31,29 @@ class ApplicationForm(forms.ModelForm):
 
 def home(request):
     jobs = JobPost.objects.all()
-    return render(request, 'jobs/home.html', {'jobs': jobs})
+
+    search = request.GET.get('search')
+    location = request.GET.get('location')
+    job_type = request.GET.get('job_type')
+
+    if search:
+        jobs = jobs.filter(
+            Q(title__icontains=search) | Q(description__icontains=search) | Q(skills__icontains=search)
+        )
+
+    if location:
+        jobs = jobs.filter(location__icontains=location)
+
+    if job_type:
+        jobs = jobs.filter(job_type=job_type)
+
+    return render(request, 'jobs/home.html', {
+        'jobs': jobs,
+        'search': search or '',
+        'location': location or '',
+        'job_type': job_type or '',
+        'job_types': JobPost.JOB_TYPES,
+    })
 
 def signup(request):
     if request.method == 'POST':
