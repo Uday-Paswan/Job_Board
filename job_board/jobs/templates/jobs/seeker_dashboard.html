@@ -4,16 +4,24 @@
 {% block content %}
 <h2>My Applications</h2>
 
-<ul>
-    {% for application in applications %}
-        <li>
-            {{ application.job.title }} at {{ application.job.location }} —
-            Status: {{ application.status }} —
-            Applied on {{ application.applied_date|date:"M d, Y" }}
-        </li>
-    {% empty %}
-        <li>You haven't applied to any jobs yet.</li>
-    {% endfor %}
-</ul>
+<div class="stats-row">
+    <div class="stat-card">
+        <div class="stat-number">{{ applications|length }}</div>
+        <div class="stat-label">Total Applied</div>
+    </div>
+</div>
 
+<div class="app-list">
+    {% for application in applications %}
+        <div class="app-row surface-card">
+            <div class="app-main">
+                <h4>{{ application.job.title }}</h4>
+                <p>{{ application.job.location }} · Applied on {{ application.applied_date|date:"M d, Y" }}</p>
+            </div>
+            <span class="pill pill-{{ application.status }}">{{ application.get_status_display }}</span>
+        </div>
+    {% empty %}
+        <div class="alert alert-info">You haven't applied to any jobs yet.</div>
+    {% endfor %}
+</div>
 {% endblock %}

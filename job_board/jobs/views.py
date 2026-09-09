@@ -40,12 +40,16 @@ def home(request):
         jobs = jobs.filter(
             Q(title__icontains=search) | Q(description__icontains=search) | Q(skills__icontains=search)
         )
-
     if location:
         jobs = jobs.filter(location__icontains=location)
-
     if job_type:
         jobs = jobs.filter(job_type=job_type)
+
+    applied_job_ids = []
+    if request.user.is_authenticated:
+        applied_job_ids = list(
+            Application.objects.filter(applicant=request.user).values_list('job_id', flat=True)
+        )
 
     return render(request, 'jobs/home.html', {
         'jobs': jobs,
@@ -53,6 +57,7 @@ def home(request):
         'location': location or '',
         'job_type': job_type or '',
         'job_types': JobPost.JOB_TYPES,
+        'applied_job_ids': applied_job_ids,
     })
 
 def signup(request):
@@ -99,8 +104,13 @@ def apply_job(request, job_id):
         messages.error(request, "Only job seekers can apply.")
         return redirect('home')
 
+    already_applied = Application.objects.filter(job=job, applicant=request.user).exists()
+    if already_applied:
+        messages.error(request, "You've already applied to this job.")
+        return redirect('home')
+
     if request.method == 'POST':
-        form = ApplicationForm(request.POST, request.FILES)  # <-- note request.FILES, new!
+        form = ApplicationForm(request.POST, request.FILES)
         if form.is_valid():
             application = form.save(commit=False)
             application.job = job
@@ -112,6 +122,7 @@ def apply_job(request, job_id):
         form = ApplicationForm()
 
     return render(request, 'jobs/apply_job.html', {'form': form, 'job': job})
+
 
 @login_required
 def recruiter_dashboard(request):

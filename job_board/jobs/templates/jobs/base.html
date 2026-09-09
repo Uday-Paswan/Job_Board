@@ -11,7 +11,16 @@
 
     <nav class="navbar">
         <div class="container">
-            <a href="{% url 'home' %}" class="navbar-brand">JobBoard</a>
+            <a href="{% url 'home' %}" class="navbar-brand">
+                <span class="brand-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="3" y="7" width="18" height="13" rx="2" stroke="white" stroke-width="2"/>
+                        <path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" stroke="white" stroke-width="2"/>
+                        <line x1="3" y1="12" x2="21" y2="12" stroke="white" stroke-width="2"/>
+                    </svg>
+                </span>
+                <span class="brand-text">Job<span class="brand-accent">Board</span></span>
+            </a>
 
             <button class="nav-toggle">&#9776;</button>
 
@@ -20,23 +29,26 @@
 
                 {% if user.is_authenticated %}
                     {% if user.profile.role == 'recruiter' %}
-                        <a href="{% url 'post_job' %}" class="btn btn-outline">Post a Job</a>
-                    {% endif %}
-                    {% if user.profile.role == 'recruiter' %}
                         <a href="{% url 'recruiter_dashboard' %}">Dashboard</a>
                     {% endif %}
                     {% if user.profile.role == 'seeker' %}
                         <a href="{% url 'seeker_dashboard' %}">My Applications</a>
                     {% endif %}
-                    <span>Hi, {{ user.username }}</span>
-                    <form method="POST" action="{% url 'logout' %}" style="display:inline;">
+
+                    <div class="nav-actions">
+                        {% if user.profile.role == 'recruiter' %}
+                            <a href="{% url 'post_job' %}" class="btn btn-primary">Post a Job</a>
+                        {% endif %}
+                        <span class="nav-divider"></span>
+                        <span class="nav-user">Hi, {{ user.username }}</span>
+                        <form method="POST" action="{% url 'logout' %}" style="display:inline;">
                         {% csrf_token %}
-                        <button type="submit" class="btn btn-outline">Logout</button>
-                    </form>
-                    
+                            <button type="submit" class="btn btn-outline btn-logout">Logout</button>
+                        </form>
+                    </div>
                 {% else %}
-                    <a href="{% url 'login' %}" class="btn btn-primary">Login</a>
                     <a href="{% url 'signup' %}" class="btn btn-outline">Sign Up</a>
+                    <a href="{% url 'login' %}" class="btn btn-primary">Login</a>
                 {% endif %}
             </div>
         </div>
@@ -68,5 +80,15 @@
 
     <script src="{% static 'jobs/js/main.js' %}"></script>
     {% block extra_js %}{% endblock %}
+    <div id="logoutModal" class="modal-overlay">
+    <div class="modal-box">
+        <h3>Log out?</h3>
+        <p>You'll need to sign in again to access your account.</p>
+        <div class="modal-actions">
+            <button type="button" class="btn btn-outline" id="logoutCancel">Cancel</button>
+            <button type="button" class="btn btn-danger" id="logoutConfirm">Log Out</button>
+        </div>
+    </div>
+</div>
 </body>
 </html>

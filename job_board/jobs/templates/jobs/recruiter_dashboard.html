@@ -4,27 +4,34 @@
 {% block content %}
 <h2>My Posted Jobs</h2>
 
-{% for job in jobs %}
-    <div>
-        <h3>{{ job.title }} ({{ job.location }})</h3>
-        <p>Deadline: {{ job.deadline }}</p>
-
-        <h4>Applicants:</h4>
-        <ul>
-            {% for application in job.applications.all %}
-                <li>
-                    {{ application.applicant.username }} —
-                    <a href="{{ application.resume.url }}" target="_blank">View Resume</a>
-                    — Status: {{ application.status }}
-                </li>
-            {% empty %}
-                <li>No applicants yet.</li>
-            {% endfor %}
-        </ul>
+<div class="stats-row">
+    <div class="stat-card">
+        <div class="stat-number">{{ jobs|length }}</div>
+        <div class="stat-label">Jobs Posted</div>
     </div>
-    <hr>
-{% empty %}
-    <p>You haven't posted any jobs yet.</p>
-{% endfor %}
+</div>
 
+{% for job in jobs %}
+    <div class="surface-card" style="padding:20px; margin-bottom:16px;">
+        <h3 style="margin-top:0;">{{ job.title }} <span class="job-type-badge">{{ job.location }}</span></h3>
+        <p class="job-meta">Deadline: {{ job.deadline }}</p>
+
+        <h4 style="margin-bottom:8px;">Applicants</h4>
+        <div class="app-list">
+            {% for application in job.applications.all %}
+                <div class="app-row" style="background:#fafafa;">
+                    <div class="app-main">
+                        <h4>{{ application.applicant.username }}</h4>
+                        <p><a href="{{ application.resume.url }}" target="_blank">View Resume</a></p>
+                    </div>
+                    <span class="pill pill-{{ application.status }}">{{ application.get_status_display }}</span>
+                </div>
+            {% empty %}
+                <p style="color:var(--color-text-muted); font-size:0.85rem;">No applicants yet.</p>
+            {% endfor %}
+        </div>
+    </div>
+{% empty %}
+    <div class="alert alert-info">You haven't posted any jobs yet.</div>
+{% endfor %}
 {% endblock %}

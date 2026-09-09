@@ -55,5 +55,8 @@ class Application(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
     applied_date = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        unique_together = ('job', 'applicant')
+
     def __str__(self):
         return f"{self.applicant.username} → {self.job.title}"
