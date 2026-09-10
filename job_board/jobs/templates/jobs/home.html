@@ -2,20 +2,51 @@
 {% block title %}Browse Jobs | JobBoard{% endblock %}
 
 {% block content %}
+<section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-inner">
+        <h1>Find Your Perfect <span class="hero-accent">Tech Job</span></h1>
+    </div>
+</section>
 <form method="GET" class="search-form">
-    <input type="text" name="search" placeholder="Search by title, skill, or keyword..." value="{{ search }}">
-    <input type="text" name="location" placeholder="Location" value="{{ location }}">
-    <select name="job_type">
-        <option value="">All Types</option>
-        {% for value, label in job_types %}
-            <option value="{{ value }}" {% if job_type == value %}selected{% endif %}>{{ label }}</option>
-        {% endfor %}
-    </select>
-    <button type="submit" class="btn btn-primary">Search</button>
-    {% if search or location or job_type %}
-        <a href="{% url 'home' %}" class="btn btn-outline">Clear</a>
-    {% endif %}
+    <div class="search-field">
+        <label>What?</label>
+        <div class="input-icon-wrap">
+            <span class="input-icon">🔍</span>
+            <input type="text" name="search" placeholder="Title, skill, or keyword..." value="{{ search }}">
+        </div>
+    </div>
+
+    <div class="search-divider"></div>
+
+    <div class="search-field">
+        <label>Where?</label>
+        <div class="input-icon-wrap">
+            <span class="input-icon">📍</span>
+            <input type="text" name="location" placeholder="Location..." value="{{ location }}">
+        </div>
+    </div>
+
+    <div class="search-divider"></div>
+
+    <div class="search-field search-field-select">
+        <label>Type</label>
+        <select name="job_type">
+            <option value="">All Types</option>
+            {% for value, label in job_types %}
+                <option value="{{ value }}" {% if job_type == value %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary search-btn">🔎 Search</button>
 </form>
+
+{% if search or location or job_type %}
+    <div style="margin-top:10px;">
+        <a href="{% url 'home' %}" class="btn btn-outline" style="font-size:0.8rem; padding:6px 14px;">Clear Filters</a>
+    </div>
+{% endif %}
 <div class="page-header">
     <h2>Available Jobs</h2>
     <span class="count-badge">{{ jobs|length }} open position{{ jobs|length|pluralize }}</span>

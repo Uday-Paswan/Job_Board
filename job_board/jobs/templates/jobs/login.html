@@ -2,20 +2,22 @@
 {% block title %}Login | JobBoard{% endblock %}
 
 {% block content %}
-<div class="form-card">
-    <h2>Login</h2>
-    <form method="POST">
-        {% csrf_token %}
-        {% for field in form %}
-            <div class="form-group">
-                <label>{{ field.label }}</label>
-                {{ field }}
-                {% if field.errors %}
-                    <div class="field-error">{{ field.errors }}</div>
-                {% endif %}
-            </div>
-        {% endfor %}
-        <button type="submit" class="btn btn-primary btn-full">Login</button>
-    </form>
+<div class="auth-wrapper">
+    <div class="form-card">
+        <h2>Login</h2>
+        <form method="POST">
+            {% csrf_token %}
+            {% for field in form %}
+                <div class="form-group">
+                    <label>{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.errors %}
+                        <div class="field-error">{{ field.errors }}</div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+            <button type="submit" class="btn btn-primary btn-full">Login</button>
+        </form>
+    </div>
 </div>
 {% endblock %}

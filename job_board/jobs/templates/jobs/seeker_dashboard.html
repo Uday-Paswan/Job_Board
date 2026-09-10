@@ -9,19 +9,46 @@
         <div class="stat-number">{{ applications|length }}</div>
         <div class="stat-label">Total Applied</div>
     </div>
+    <div class="stat-card">
+        <div class="stat-number">{{ pending_count }}</div>
+        <div class="stat-label">Pending</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-number">{{ accepted_count }}</div>
+        <div class="stat-label">Accepted</div>
+    </div>
 </div>
 
-<div class="app-list">
-    {% for application in applications %}
-        <div class="app-row surface-card">
-            <div class="app-main">
-                <h4>{{ application.job.title }}</h4>
-                <p>{{ application.job.location }} · Applied on {{ application.applied_date|date:"M d, Y" }}</p>
-            </div>
-            <span class="pill pill-{{ application.status }}">{{ application.get_status_display }}</span>
-        </div>
-    {% empty %}
-        <div class="alert alert-info">You haven't applied to any jobs yet.</div>
-    {% endfor %}
+<div class="dashboard-header-row">
+    <h3>Application History</h3>
+    <a href="{% url 'home' %}" class="btn btn-primary">Browse More Jobs</a>
 </div>
+
+<div class="table-wrapper surface-card">
+    <table class="dashboard-table">
+        <thead>
+            <tr>
+                <th>Job Title</th>
+                <th>Location</th>
+                <th>Applied On</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for application in applications %}
+                <tr>
+                    <td>{{ application.job.title }}</td>
+                    <td>📍 {{ application.job.location }}</td>
+                    <td>{{ application.applied_date|date:"M d, Y" }}</td>
+                    <td>
+                        <span class="pill pill-{{ application.status }}">{{ application.get_status_display }}</span>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr><td colspan="4">You haven't applied to any jobs yet.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
 {% endblock %}

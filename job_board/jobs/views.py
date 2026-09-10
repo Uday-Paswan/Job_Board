@@ -8,6 +8,7 @@ from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
+from django.utils import timezone
 
 
 class SignUpForm(UserCreationForm):
@@ -133,8 +134,15 @@ def recruiter_dashboard(request):
         return redirect('home')
 
     jobs = request.user.job_posts.all()
+    total_applicants = Application.objects.filter(job__posted_by=request.user).count()
+    today = timezone.now().date()
 
-    return render(request, 'jobs/recruiter_dashboard.html', {'jobs': jobs})
+    return render(request, 'jobs/recruiter_dashboard.html', {
+        'jobs': jobs,
+        'total_applicants': total_applicants,
+        'today': today,
+    })
+
 
 @login_required
 def seeker_dashboard(request):
@@ -145,5 +153,11 @@ def seeker_dashboard(request):
         return redirect('home')
 
     applications = request.user.applications.all()
+    pending_count = applications.filter(status='pending').count()
+    accepted_count = applications.filter(status='accepted').count()
 
-    return render(request, 'jobs/seeker_dashboard.html', {'applications': applications})
+    return render(request, 'jobs/seeker_dashboard.html', {
+        'applications': applications,
+        'pending_count': pending_count,
+        'accepted_count': accepted_count,
+    })

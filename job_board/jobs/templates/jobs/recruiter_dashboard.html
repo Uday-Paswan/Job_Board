@@ -2,21 +2,62 @@
 {% block title %}My Dashboard | JobBoard{% endblock %}
 
 {% block content %}
-<h2>My Posted Jobs</h2>
+<h2>Employer Dashboard</h2>
 
 <div class="stats-row">
     <div class="stat-card">
         <div class="stat-number">{{ jobs|length }}</div>
-        <div class="stat-label">Jobs Posted</div>
+        <div class="stat-label">Total Job Posts</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-number">{{ total_applicants }}</div>
+        <div class="stat-label">Total Applicants</div>
     </div>
 </div>
 
+<div class="dashboard-header-row">
+    <h3>My Posted Jobs</h3>
+    <a href="{% url 'post_job' %}" class="btn btn-primary">Post a New Job</a>
+</div>
+
+<div class="table-wrapper surface-card">
+    <table class="dashboard-table">
+        <thead>
+            <tr>
+                <th>Job Title</th>
+                <th>Location</th>
+                <th>Applications</th>
+                <th>Post Date</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for job in jobs %}
+                <tr>
+                    <td>{{ job.title }}</td>
+                    <td>📍 {{ job.location }}</td>
+                    <td>{{ job.applications.count }}</td>
+                    <td>{{ job.created_at|date:"M d, Y" }}</td>
+                    <td>
+                        {% if job.deadline >= today %}
+                            <span class="pill pill-accepted">Active</span>
+                        {% else %}
+                            <span class="pill pill-rejected">Expired</span>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% empty %}
+                <tr><td colspan="5">You haven't posted any jobs yet.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<h3 style="margin-top:32px;">Applicant Details</h3>
+
 {% for job in jobs %}
     <div class="surface-card" style="padding:20px; margin-bottom:16px;">
-        <h3 style="margin-top:0;">{{ job.title }} <span class="job-type-badge">{{ job.location }}</span></h3>
-        <p class="job-meta">Deadline: {{ job.deadline }}</p>
-
-        <h4 style="margin-bottom:8px;">Applicants</h4>
+        <h4 style="margin-top:0;">{{ job.title }} <span class="job-type-badge">{{ job.location }}</span></h4>
         <div class="app-list">
             {% for application in job.applications.all %}
                 <div class="app-row" style="background:#fafafa;">
@@ -31,7 +72,6 @@
             {% endfor %}
         </div>
     </div>
-{% empty %}
-    <div class="alert alert-info">You haven't posted any jobs yet.</div>
 {% endfor %}
+
 {% endblock %}
