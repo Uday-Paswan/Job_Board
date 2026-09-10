@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: job-board
+    env: python
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn job_board.wsgi"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.0
