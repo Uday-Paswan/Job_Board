@@ -1,216 +1,80 @@
-# Job Board
+# JobBoard — Recruitment & Job Listing Platform
 
-A web-based **Job Board Application** built with Django that allows users to browse job opportunities and provides functionality for managing job listings.
+A full-stack job board web application built with Django, where recruiters can post job openings and job seekers can browse, search, and apply with resume uploads.
 
-## 🚀 Features
+**Live demo:** https://job-board-8o5t.onrender.com/
 
-* User-friendly job listing interface
-* Browse available jobs
-* View detailed information about a job
-* Search and filter job opportunities
-* User authentication
-* Create and manage job listings
-* Django Admin Panel for managing application data
-* Database integration using Django ORM
-* Responsive web interface
+> Note: hosted on Render's free tier, so the first load after a period of inactivity may take 20–30 seconds while the server spins back up.
 
-## 🛠️ Tech Stack
+---
 
-* **Backend:** Python, Django
-* **Frontend:** HTML, CSS, JavaScript
-* **Database:** SQLite / PostgreSQL
-* **Version Control:** Git & GitHub
+## Features
 
-## 📁 Project Structure
+- **Role-based accounts** — users sign up as either a Job Seeker or a Recruiter, with separate permissions and dashboards for each.
+- **Recruiters** can post jobs, view all applicants per job, and track applicant status from a dedicated dashboard.
+- **Job seekers** can browse and search jobs, apply with a resume upload, and track their application history and status.
+- **Search & filtering** — jobs can be filtered by keyword (title, description, or skills), location, and job type, all combinable at once.
+- **Duplicate-application prevention**, enforced both at the database level (a `unique_together` constraint) and in the view logic.
+- **Secure authentication** — signup, login, logout, and role-based access control, with every protected view checked server-side (not just hidden in the UI).
+- **Custom UI** — hand-written HTML/CSS/JavaScript throughout (no CSS framework), including a responsive navbar, toast notifications, and a custom logout confirmation modal.
+- **Fully responsive**, tested down to mobile screen widths.
 
-```text
-Job_Board/
-│
-├── manage.py
-├── db.sqlite3
-│
-├── jobboard/
-│   ├── __init__.py
-│   ├── settings.py
-│   ├── urls.py
-│   ├── asgi.py
-│   └── wsgi.py
-│
-├── jobs/
-│   ├── migrations/
-│   ├── templates/
-│   ├── static/
-│   ├── admin.py
-│   ├── apps.py
-│   ├── models.py
-│   ├── urls.py
-│   ├── views.py
-│   └── forms.py
-│
-└── README.md
-```
+---
 
-> The exact structure may vary depending on the apps and features implemented in the project.
+## Tech stack
 
-## ⚙️ Installation
+- **Backend:** Python, Django
+- **Database:** PostgreSQL (production), SQLite (local development)
+- **Frontend:** HTML, CSS, vanilla JavaScript
+- **Deployment:** Render, with Gunicorn as the WSGI server and WhiteNoise for static file serving
 
-### 1. Clone the repository
+---
+
+## Data model
+
+Three core models drive the app:
+
+- `Profile` — extends Django's built-in `User` via a `OneToOneField`, storing each user's role (`seeker` or `recruiter`).
+- `JobPost` — a job listing, linked to the recruiter who posted it via `ForeignKey`.
+- `Application` — the join between a `JobPost` and an applicant `User`, holding the uploaded resume and application status. Enforces one application per user per job via `unique_together`.
+
+---
+
+## Running locally
 
 ```bash
-git clone https://github.com/your-username/Job_Board.git
-```
+git clone https://github.com/Uday-Paswan/Job_Board.git
+cd Job_Board/job_board
 
-### 2. Navigate to the project
-
-```bash
-cd Job_Board
-```
-
-### 3. Create a virtual environment
-
-```bash
 python -m venv venv
-```
+venv\Scripts\activate        # Windows
+# source venv/bin/activate   # macOS/Linux
 
-### 4. Activate the virtual environment
-
-**Windows:**
-
-```bash
-venv\Scripts\activate
-```
-
-### 5. Install dependencies
-
-```bash
 pip install -r requirements.txt
-```
 
-If you don't have a `requirements.txt` file yet:
-
-```bash
-pip install django
-```
-
-Then create it with:
-
-```bash
-pip freeze > requirements.txt
-```
-
-### 6. Apply migrations
-
-```bash
-python manage.py makemigrations
 python manage.py migrate
-```
-
-### 7. Create a superuser
-
-```bash
 python manage.py createsuperuser
-```
-
-Follow the prompts to create your admin account.
-
-### 8. Run the development server
-
-```bash
 python manage.py runserver
 ```
 
-Open the application in your browser:
+Then visit `http://127.0.0.1:8000/jobs/` in your browser.
 
-```text
-http://127.0.0.1:8000/
-```
+---
 
-## 🔐 Admin Panel
+## Known limitations
 
-Django's built-in admin panel can be used to manage job-related data.
+- **Resume file storage is not persistent in production.** Render's free tier uses an ephemeral filesystem, so uploaded resumes can be lost on redeploy. Job posts, user accounts, and application records persist correctly (they're stored in PostgreSQL) — only the physical uploaded file is affected. In a production deployment, this would be solved by storing uploads on a service like AWS S3 or Cloudinary instead of local disk.
+- No employer analytics (e.g. view counts per listing) are currently tracked.
 
-```text
-http://127.0.0.1:8000/admin/
-```
+---
 
-Log in using the superuser credentials created during setup.
+## Possible future improvements
 
-## 🗄️ Database
+- Move resume storage to S3/Cloudinary for persistence across deploys
+- Email notifications when an application's status changes
+- Pagination on the job listing page
+- Job view-count tracking for recruiters
 
-The application uses Django's ORM to interact with the database.
+---
 
-Example workflow:
-
-```bash
-python manage.py makemigrations
-python manage.py migrate
-```
-
-Models are defined in:
-
-```text
-jobs/models.py
-```
-
-## 🔄 Application Flow
-
-```text
-User
-  ↓
-Browser
-  ↓
-Django URL Router
-  ↓
-Views
-  ↓
-Models / Django ORM
-  ↓
-Database
-  ↓
-Views
-  ↓
-Templates
-  ↓
-Browser
-```
-
-## 📌 Future Improvements
-
-* Job search with advanced filters
-* Job categories
-* Company profiles
-* Job application functionality
-* Resume upload
-* User profiles
-* Saved jobs
-* Email notifications
-* REST API using Django REST Framework
-* Pagination
-* Deployment to a cloud platform
-
-## 🎯 Learning Objectives
-
-This project was built to practice and understand:
-
-* Django project and app structure
-* URL routing
-* Views
-* Templates and Django Template Language
-* Models and Django ORM
-* Forms
-* Authentication
-* CRUD operations
-* Migrations
-* Django Admin
-* Static files
-* Git and GitHub
-
-## 👨‍💻 Author
-
-**Uday Paswan**
-
-This project was developed as part of my journey toward becoming a **Python Backend Developer**.
-
-## 📄 License
-
-This project is for learning and educational purposes.
+Built as a learning project to practice Django's full request/response cycle, ORM relationships, authentication, role-based permissions, and deployment.
